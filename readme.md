@@ -1,0 +1,1 @@
+blast CBGA-synthase fasta to assembly. Manually pick out the exons because there are just around a dozen hits. Then convert blast output to bed. Pull fasta sequence from assembly using bedtools. May need to trim overlap of exons.
