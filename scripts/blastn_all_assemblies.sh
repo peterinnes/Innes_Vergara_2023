@@ -21,13 +21,3 @@ if [[ -e ${assembly_paths[i]}.nhr ]]; then
     blastn -query $query -db ${assembly_paths[i]} -outfmt 6 | sort -k 7 -n > ${outdir}${assembly_names[i]}_CBGAs.blast
 
 done
-
-#cat $list_of_assemblies | while read assembly; do
-
-    #if [[ ! -f $assembly.nhr ]] #check if file exists
-	  #  makeblastdb $assembly
-    #else
-	   #blastn -query $query -db $assembly -outfmt 6 > $assembly_prefix.blast
-    #fi
-
-#done
