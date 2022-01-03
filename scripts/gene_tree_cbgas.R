@@ -3,17 +3,16 @@ library(Biostrings)
 library(ape)
 library(phangorn)
 
-
-c24 <- readAAStringSet("C24/aa_CBGAs_C24.mRNA.fasta")
-cannatonic <- readAAStringSet("Cannatonic/aa_CBGAs_Cannatonic.mRNA.fasta")
-wild <- readAAStringSet("C_sativa_isolate_JL/aa_CBGAs_vs_Gao.mRNA.fasta")
-cs10 <- readAAStringSet("cs10/aa_CBGAs_cs10.mRNA.fasta")
-finola <- readAAStringSet("Finola/aa_CBGAs_Finola.mRNA.fasta")
-jamaican_lion <- readAAStringSet("Jamaican_Lion/aa_CBGAs_Jamaican_Lion.mRNA.fasta")
-pbbk <- readAAStringSet("PBBK_steepAsm/aa_CBGAs_PBBK_steepAsm.mRNA.fasta")
-purp_kush <- readAAStringSet("Purple_Kush/aa_CBGAs_Purple_Kush.mRNA.fasta")
-uso31 <- readAAStringSet("USO31/aa_CBGAs_USO31.mRNA.fasta")
-ref <- readAAStringSet("aa_geranyltransferase.fasta")
+c24 <- readAAStringSet("C24/CBGAs_C24.mRNA.fasta")
+cannatonic <- readAAStringSet("Cannatonic/CBGAs_Cannatonic.mRNA.fasta")
+wild <- readAAStringSet("C_sativa_isolate_JL/CBGAs_vs_Gao.mRNA.fasta")
+cs10 <- readAAStringSet("cs10/CBGAs_cs10.mRNA.fasta")
+finola <- readAAStringSet("Finola/CBGAs_Finola.mRNA.fasta")
+jamaican_lion <- readAAStringSet("Jamaican_Lion/CBGAs_Jamaican_Lion.mRNA.fasta")
+pbbk <- readAAStringSet("PBBK_steepAsm/CBGAs_PBBK_steepAsm.mRNA.fasta")
+purp_kush <- readAAStringSet("Purple_Kush/CBGAs_Purple_Kush.mRNA.fasta")
+uso31 <- readAAStringSet("USO31/CBGAs_USO31.mRNA.fasta")
+ref <- readAAStringSet("geranyltransferase.fasta")
 
 seqs <- AAStringSet(c(c24, cannatonic, wild, cs10, finola, jamaican_lion, pbbk, purp_kush, uso31, ref))
 head(seqs)
@@ -23,10 +22,10 @@ alignment <- msa(seqs,method='Muscle')
 print(alignment)
 
 AAStr <- as(alignment, "AAStringSet")
-writeXStringSet(AAStr, file="aa_alignment.fasta")
+writeXStringSet(AAStr, file="alignment.fasta")
 
 # Transform the alignment file that you just generated into the 'phyDat' format that the phangorn package requires
-cbgas_alignment <- read.phyDat("aa_alignment.fasta", format="fasta",type="AA")
+cbgas_alignment <- read.phyDat("alignment.fasta", format="fasta",type="AA")
 
 dm <- dist.ml(cbgas_alignment)
 head(dm)
@@ -39,3 +38,26 @@ cbgas_NJ <- NJ(dm) #make a neighbor joining tree for fun. This is an alternative
 
 cbgas_upgma_tree <- plot.phylo(cbgas_UPGMA, main="UPGMA gene tree of \n geranylpyrophosphate:olivetolate geranyltransferase \n aka CBGA Synthase")
 
+#### Dn/Ds with ape, started 10.25.21 ####
+# I think intraspecific Dn/Ds may not be valid? See Kryazhimskiy and Plotkin 2008
+c24_nucl <- readDNAStringSet("C24/CBGAs_C24.mRNA.fasta")
+cannatonic_nucl <- readDNAStringSet("Cannatonic/CBGAs_Cannatonic.mRNA.fasta")
+wild_nucl <- readDNAStringSet("C_sativa_isolate_JL/CBGAs_C_sativa_Isolate_JL.mRNA.fasta")
+cs10_nucl <- readDNAStringSet("cs10/CBGAs_cs10.mRNA.fasta")
+finola_nucl <- readDNAStringSet("Finola/CBGAs_Finola.mRNA.fasta")
+jamaican_lion_nucl <- readDNAStringSet("Jamaican_Lion/CBGAs_Jamaican_Lion.mRNA.fasta")
+purp_kush_nucl <- readDNAStringSet("Purple_Kush/CBGAs_Purple_Kush.mRNA.fasta")
+uso31_nucl <- readDNAStringSet("USO31/CBGAs_USO31.mRNA.fasta")
+ref_nucl <- readDNAStringSet("geranyltransferase.fasta")
+pbbk_nucl <- readDNAStringSet("PBBK_steepAsm/CBGAs_PBBK_steepAsm.mRNA.fasta")
+
+dnds_seqs <- DNAStringSet(c(c24_nucl, cannatonic_nucl, wild_nucl, cs10_nucl,
+                            finola_nucl, jamaican_lion_nucl, purp_kush_nucl, uso31_nucl, ref_nucl, pbbk_nucl))
+
+names(dnds_seqs) <- c("c24", "cannatonic", "putative wild", "cs10", "finola", "jamaican_lion", "pbbk", "purp_kush", "uso31", "reference (patent)")
+?msa
+dnds_alignment <- as.DNAbin(msa(dnds_seqs,method='Muscle'))
+dnds_results <- dnds(dnds_alignment)
+
+dnds_results[which(dnds_results=="Inf")] <- NA
+mean(dnds_results, na.rm = T) # 0.419

@@ -10,7 +10,7 @@ if [ $# -lt 4 ]
 		
 		Required options: 
 		
-		[-i] BLAST results in outfmt 7
+		[-i] BLAST results in outfmt 6
 		[-r] reference fasta file
 		[-n] reference assembly name
 		[-g] gene/sequence name	
@@ -24,19 +24,23 @@ if [ $# -lt 4 ]
 		g) gene_name=$OPTARG;;
 		esac
 		done
-		
-		# First step is to convert BLAST format to BED format, using awk. Important to make note if gene is on  plus or minus strand
+		  
+		# First step is to convert BLAST format to BED format, using awk. Important to make note if gene is on  plus or minus strand.
+        # Also, subtract 1 from BED start position because BLAST is 0-based while BED is 1-based.
 		awk 'BEGIN {OFS="\t"}; {
 		if ($9 > $10)
-			print $2, $10, $9, "'"$gene_name"'", $3, "-";
+			print $2, $10-1, $9, "'"$gene_name"'", $3, "-";
 		else
-			print $2, $9, $10, "'"$gene_name"'", $3, "+";
-		}' $blast_input > ${gene_name}_$ref_name.exons.bed
+			print $2, $9-1, $10, "'"$gene_name"'", $3, "+";
+		}' $blast_input > exons_${gene_name}_$ref_name.bed
 
 		# Next, use bedtools getfasta to extract nucleotide sequence. Use the -s flag to force strandedness (reverse complement if on minus strand)
-		bedtools getfasta \
+		/data0/CannabisGenomics2021/Everybody/petah_pahka/software/bedtools2/bin/fastaFromBed \
 		-fi $ref_fasta \
-		-bed ${gene_name}_$ref_name.exons.bed \
+		-bed exons_${gene_name}_$ref_name.bed \
 		-s \
-		-fo ${gene_name}_$ref_name.exons.fasta
+		-fo exons_${gene_name}_$ref_name.fasta
+        
+        # Finally, merge the exons
+        union -sequence exons_${gene_name}_$ref_name.fasta -outseq mRNA_${gene_name}_$ref_name.fasta
 fi
