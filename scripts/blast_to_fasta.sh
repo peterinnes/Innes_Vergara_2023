@@ -1,6 +1,6 @@
 # take coordinates from BLAST hits and extract nucleotide sequence from the referance fasta
 # Peter Innes
-# last updated 4.22.21
+# last updated:
 
 if [ $# -lt 4 ] 
 	then

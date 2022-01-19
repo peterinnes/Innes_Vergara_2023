@@ -61,3 +61,23 @@ dnds_results <- dnds(dnds_alignment)
 
 dnds_results[which(dnds_results=="Inf")] <- NA
 mean(dnds_results, na.rm = T) # 0.419
+
+#### alignment and tree with all CsPTx genes (DNA sequence) ####
+CsPTx_seqs <- readDNAStringSet("getfasta_results/all_CDS.fasta")
+CsPTx_alignment <- msa(CsPTx_seqs, method = "ClustalOmega")
+
+CsPTx_Str <- as(CsPTx_alignment, "DNAStringSet")
+writeXStringSet(CsPTx_Str, file="getfasta_results/CsPTx_Muscle_alignment.fasta")
+CsPTx_phyDat <- read.phyDat("getfasta_results/CsPTx_Muscle_alignment.fasta", format = "fasta", type = "DNA")
+dm <- dist.ml(CsPTx_phyDat)
+CsPTx_NJ <- NJ(dm)
+CsPTx_tree <- plot.phylo(CsPTx_NJ, main="NJ gene tree of \n Cannabis geranylpyrophosphate:olivetolate \n geranyltransferase genes")
+
+# ML phylogeny
+fit <- pml(CsPTx_NJ, CsPTx_phyDat)
+print(fit)
+fitJC <- optim.pml(fit, model = "JC", rearrangement = "stochastic")
+logLik(fitJC)
+bs <- bootstrap.pml(fitJC, bs=100, optNni=TRUE, multicore=TRUE, control = pml.control(trace=0))
+plotBS(midpoint(fitJC$tree), bs, p = 50, type="p")
+?plotBS

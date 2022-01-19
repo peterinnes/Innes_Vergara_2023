@@ -13,6 +13,9 @@
 # Further more, each file should contain only the exons/blast hit that comprise the gene. 
 # Therefore, a manual processing step that involves deleting erroneous blast hits/exons, 
 # as well as splitting gene copies into separate file, is required before running this code
+
+#IMPORTANT!!!! 'cleaned' blast results files must be sorted by the query start position (column 7)
+
 system("rm ~/student_folders/Everybody/petah_pahka/list_of_blast_results_files.txt")
 system("for file in blast_results/cleaned/*.cleaned.blast; do realpath $file >> ~/student_folders/Everybody/petah_pahka/list_of_blast_results_files.txt; done")
 blast_files <- readLines("list_of_blast_results_files.txt")
