@@ -10,4 +10,4 @@
 
 4. For some reason, the chromosome names for the C24 and USO31 assemblies are not recognized by bedtools getfasta and so we have to use python get the the fasta sequences from these two genomes. This is done with 'bed_to_fasta.py.' using 'CsPTx_bed_to_fasta_python_input_table.csv' as input (i.e. commandline argument)
 
-
+5. Translate the nucleotide sequences to amino acids with 'translate_cds.sh' to check for internal stop codons.
