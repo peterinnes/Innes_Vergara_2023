@@ -1,8 +1,8 @@
-ref=~/student_folders/Everybody/petah_pahka/cs10/GCF_900626175.2_cs10_cds_from_genomic.fna
+ref=~/CsPTx_genomics/data/assemblies/GCF_900626175.2_cs10_cds_from_genomic.fna
 queries=(CsPT1 CsPT4 CsPT7)
 
-rundir=/home/hemp2021/student_folders/Everybody/petah_pahka/cs10/
-outdir=/home/hemp2021/student_folders/Everybody/petah_pahka/blast_results/
+rundir=~/CsPTx_genomics/
+outdir=~/CsPTx_genomics/data/blast_results/
 
 #IFS=$'\n' read -d '\n' -r -a array < assembly_paths.txt
 #IFS=$'\n' read -d '\n' -r -a array2 < assembly_paths.txt
